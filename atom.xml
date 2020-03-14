@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>BinXU</title>
+  
+  <subtitle>岁月不饶人，我亦未曾饶过岁月</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://binn-xu.github.io/"/>
+  <updated>2020-03-14T06:26:33.581Z</updated>
+  <id>https://binn-xu.github.io/</id>
+  
+  <author>
+    <name>徐斌</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis那么快的背后</title>
+    <link href="https://binn-xu.github.io/2020/02/16/redis-na-me-kuai-de-bei-hou/"/>
+    <id>https://binn-xu.github.io/2020/02/16/redis-na-me-kuai-de-bei-hou/</id>
+    <published>2020-02-16T07:09:23.000Z</published>
+    <updated>2020-03-14T06:26:33.581Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;Redis 内置了复制（Replication），LUA脚本（Lua scripting）， LRU驱动事件（LRU eviction），事务（Transactions） 和不同级别的磁盘持久化（Persistence），并通过 Redis哨兵（Sentinel）和自动分区（Cluster）提供高可用性（High Availability）。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Java" scheme="https://binn-xu.github.io/categories/Java/"/>
+    
+    
+      <category term="Java" scheme="https://binn-xu.github.io/tags/Java/"/>
+    
+  </entry>
+  
+</feed>
