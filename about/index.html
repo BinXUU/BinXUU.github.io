@@ -326,7 +326,7 @@
         <div class="brand">
             <div class="title center-align">
                 <!-- 
-                    岁月不饶人，我亦未曾饶过岁月
+                    种一棵树最好的时间是十年前，而后是现在
                  -->
                 
                     关于
@@ -647,51 +647,59 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay
                         </div>
                         <div id="articleContent" data-aos="fade-up">
                             <head><meta name="generator" content="Hexo 3.9.0">
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="**style**.css">
 <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
-<ul>
+<h2 id="个人信息"><a href="#个人信息" class="headerlink" title="个人信息"></a>个人信息</h2><ul>
 <li>男，2021届毕业生</li>
-<li>求职意向：后端开发工程师(实习岗位)</li>
+<li>求职意向：后端开发工程师(实习岗位,上海土著,可尽快入职)</li>
 </ul>
 <h2 id="教育经历"><a href="#教育经历" class="headerlink" title="教育经历"></a>教育经历</h2><ul>
-<li>本科大三，华东师范大学，社会学系，2017.9~至今</li>
-<li>绩点：3.3/4.0</li>
-<li>证书：校优秀学生奖学金 三等奖 ，大夏书院“圆梦浙里”奖学金</li>
+<li>本科大三， <a href="https://www.ecnu.edu.cn/" target="_blank" rel="noopener">华东师范大学</a> ，2017.9~至今</li>
+<li>证书：校优秀学生奖学金 三等奖 ，华东师范大学大夏书院“圆梦浙里”奖学金</li>
 <li>英语：CET-6(579分)  CET-4(609分)  英语高级口译证书  具备使用阅读英语开发文档能力</li>
-<li>主修课程：数学分析，数据结构，算法与复杂性，操作系统，计算机体系结构，csapp(深入理解计算机系统)，数据库原理等</li>
+<li>主修课程：数学分析，数据结构，算法与复杂性，操作系统，计算机体系结构，csapp(深入理解计算机系统)，数据库原理,计算机网络等</li>
 </ul>
 <h2 id="项目经历"><a href="#项目经历" class="headerlink" title="项目经历"></a>项目经历</h2><ul>
-<li><p><strong>在线教育项目</strong> </p>
-<p>项目采用前后端分离的技术架构，前端采用vue.js技术栈，服务端采用SpringBoot、SpringCloud等Spring全家桶技术栈</p>
-<p>采用 Spring security + Oauth2完成用户认证及用户授权，使用rabbitmq(Routing模式)实现微服务中不同微服务任务的异步处理，图片存储采用了阿里云oss作为自己的解决方案, Spring Task任务调度+rabbitmq实现分布式事务的一致性</p>
+<li><h4 id="少儿编程在线教育项目平台"><a href="#少儿编程在线教育项目平台" class="headerlink" title="少儿编程在线教育项目平台 "></a>少儿编程在线教育项目平台 <a href=" https://github.com/BinXUU/xc-online-backend " target="_blank" rel="noopener"><img src="assets/github-brands.svg" width="18px"></a></h4><h5 id="技术架构："><a href="#技术架构：" class="headerlink" title="技术架构："></a>技术架构：</h5><blockquote>
+<p> 前后端分离，Spring Boot+Spring Cloud+Spring security Oauth2+MyBatis +MongoDB+MySQL+Redis+FreeMarker +RabbitMQ+ElasticSearch+Swagger</p>
+</blockquote>
+<h5 id="项目描述"><a href="#项目描述" class="headerlink" title="项目描述:"></a>项目描述:</h5><blockquote>
+<p>少儿编程在线教育平台是一个提供少儿编程课程在线学习的平台，它为有兴趣锻炼编程思维能力的儿童提供在线学习的服务，少儿可以在家长的陪同下通过在线学习、考试认证等学习内容，最终掌握所学的编程技能，其中包括门户，个人中心，课程管理，视频管理，页面管理等模块。</p>
+</blockquote>
+<h5 id="责任描述："><a href="#责任描述：" class="headerlink" title="责任描述："></a>责任描述：</h5><blockquote>
+<p>1.CMS页面管理模块：对各个子站点页面的管理及页面的预览和发布<br>2.课程管理模块：对我的课程的管理及课程的预览和发布<br>3.课程搜索模块：用户可以根据关键字，难度等级，分类进行搜索<br>4.单点登录及用户模块：用户登录后访问其他模块不需要再次登录，验证用户身份是否合法及验证用户是否有访问资源的权限</p>
+</blockquote>
+<h5 id="技术描述："><a href="#技术描述：" class="headerlink" title="技术描述："></a><strong>技术描述：</strong></h5><blockquote>
+<p>1.CMS页面管理：主要管理由于运营需要而经常变动的页面，从而实现根据运营需要通过页面模型与数据模型进行静态化形成页面预览与一键发布快速进行页面开发、上线的需求。<br>2.搜索系统：后台对课程进行新增与编辑，采用Logstash实现MySQL与ES索引库的同步更新。<br>3.课程管理：为教学机构提供课程管理功能，视频提供方可以添加属于自己的课程，供少儿进行在线学习。其中分为分类管理、新增课程、修改课程、预览课程、发布课程。<br>4.单点登录：使用SpringSecurity Oauth2+JWT+Redis 实现用户认证及授权。<br>5.使用rabbitmq(Routing模式)实现微服务中不同微服务任务的异步处理，图片存储采用了阿里云oss作为自己的解决方案, Spring Task任务调度+rabbitmq实现订单系统与选课系统分布式事务的一致性<br>6.更多内容可以详见我的github地址</p>
+</blockquote>
+</li>
+<li><h4 id="mini-spring框架"><a href="#mini-spring框架" class="headerlink" title="mini-spring框架"></a><strong>mini-spring框架</strong></h4><blockquote>
+<p>模仿 spring实现自己简易版本的spring 框架，模仿mybatis实现简易的orm框架，实现MVC 框架，ORM 持久化，IOC控制反转，AOP 切片编程等功能<br>项目难点：运用java 集合，反射，注解，动态代理等实现 IOC，AOP 等功能，完成编码任务，增加了对设计模式的理解</p>
+</blockquote>
 </li>
 </ul>
-<ul>
-<li><p><strong>mini-spring框架</strong></p>
-<p>模仿 spring实现自己简易版本的spring 框架，模仿mybatis实现简易的orm框架，实现MVC 框架，ORM 持久化，IOC控制反转，AOP 切片编程等功能</p>
-<p>项目难点：运用java 集合，反射，注解，动态代理等实现 IOC，AOP 等功能，完成编码任务，增加了对设计模式的理解</p>
-<h2 id="个人技能"><a href="#个人技能" class="headerlink" title="个人技能"></a>个人技能</h2></li>
-<li><p>Java 基础扎实，理解 JVM、反射等原理，熟悉 JUC、集合、异常处理、GC 回收、网络编程</p>
+<h2 id="个人技能"><a href="#个人技能" class="headerlink" title="个人技能"></a>个人技能</h2><ul>
+<li>Java 基础扎实，理解 JVM、反射等原理，熟悉 JUC、集合、异常处理、GC 回收、网络编程</li>
+<li>熟悉 MySQL 等关系型数据库和 Redis(分布式缓存)，Mongodb，了解数据库调优、SQL 优化，主从同步等；</li>
+<li>熟悉B/S开发架构，熟悉MVC开发模式，熟练掌握SpringMVC、Spring、MyBatis/Hibernate、SpringBoot等开源框架开发技术，熟悉SOA架构</li>
+<li>分布式消息中间件rabbitMQ，kafka(熟悉)；rpc框架dubbo，注册中心zookeeper，基于redis的分布式锁(了解中)</li>
+<li>熟悉装饰、单例、代理等常用设计模式，计算机专业知识扎实</li>
+<li>掌握前端基本知识，熟悉 js，jquery，vue.js</li>
+<li>熟练 Git、Maven、docker等 项目管理构建工具</li>
+</ul>
+<h2 id="个人描述"><a href="#个人描述" class="headerlink" title="个人描述"></a>个人描述</h2><ul>
+<li><p>在不断的跳坑脱坑中进步，希望在工作中能应用到自己学校所学的东西，跟产品一同成长，  对新技术始终保持着好奇心态，乐于尝试新技术，喜欢钻研技术</p>
 </li>
-<li><p>熟悉 MySQL 等关系型数据库和 Redis(分布式缓存)，Mongodb，了解数据库调优、SQL 优化，主从同步等；</p>
+<li><p>有良好的设计与编码品味，对编程抱有热忱</p>
 </li>
-<li><p>熟悉B/S开发架构，熟悉MVC开发模式，熟练掌握SpringMVC、Spring、MyBatis/Hibernate、SpringBoot等开源框架开发技术，熟悉SOA架构</p>
+<li><p>具备优秀的沟通能力和高度的团队合作意识，能快速融入团队；</p>
 </li>
-<li><p>分布式的开发中间件，消息中间件rabbitMQ，kafka(熟悉)；rpc框架dubbo，注册中心zookeeper，基于redis的分布式缓存，基于redis的分布式锁(了解中)</p>
-</li>
-<li><p>熟悉装饰、单例、代理等常用设计模式，计算机专业知识扎实</p>
-</li>
-<li><p>掌握前端基本知识，熟悉 js，jquery，vue.js</p>
-</li>
-<li><p>熟练 Git、Maven、docker等 项目管理构建工具</p>
-<h2 id="个人描述"><a href="#个人描述" class="headerlink" title="个人描述"></a>个人描述</h2></li>
-<li><p>在不断的跳坑脱坑中进步，希望在工作中能应用到自己学校所学的东西，跟产品一同成长，  对新技术始终保持着好奇心态，乐于尝试新技术</p>
-</li>
-<li><p>虽然不是科班出身，但是我都有完整地跟过交大计算机系与他们软件学院开设的专业课程，我这学期也选了本校的操作系统课(实验课部分应该做的是ucore)与算法课，希望能够用这两门课的成绩当我之后工作或者继续就读研究生的敲门砖。</p>
+<li><p>今年大三，目前就读于华东师范大学社会学系，在上海交通大学计算机系与软件学院修读计算机方面的专业课程，本学期选课操作系统(实验课部分:ucore)与算法，希望这学期的好成绩当作之后⼯作的敲⻔砖 (已经在交大进行过这两门课程的学习) </p>
 </li>
 </ul>
+<hr>
 <p>感谢您花时间阅读我的简历，期待能有机会和您共事，也期待能够跟你成为同事</p>
 
                         </div>
