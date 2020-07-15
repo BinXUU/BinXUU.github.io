@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://binn-xu.github.io/"/>
-  <updated>2020-07-15T09:12:46.121Z</updated>
+  <updated>2020-07-15T11:02:52.803Z</updated>
   <id>https://binn-xu.github.io/</id>
   
   <author>
@@ -15,6 +15,110 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ucore Lab04</title>
+    <link href="https://binn-xu.github.io/2020/05/16/ucore-lab04/"/>
+    <id>https://binn-xu.github.io/2020/05/16/ucore-lab04/</id>
+    <published>2020-05-16T07:09:23.000Z</published>
+    <updated>2020-07-15T11:02:52.803Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Ucore-lab04&quot;&gt;&lt;a href=&quot;#Ucore-lab04&quot; class=&quot;headerlink&quot; title=&quot;Ucore lab04&quot;&gt;&lt;/a&gt;Ucore lab04&lt;/h1&gt;&lt;h1 id=&quot;一、-操作系统原理&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/categories/Ucore/"/>
+    
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/tags/Ucore/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Ucore Lab02</title>
+    <link href="https://binn-xu.github.io/2020/05/16/ucore-lab02/"/>
+    <id>https://binn-xu.github.io/2020/05/16/ucore-lab02/</id>
+    <published>2020-05-16T07:09:23.000Z</published>
+    <updated>2020-07-15T11:03:19.725Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Ucore-Lab02&quot;&gt;&lt;a href=&quot;#Ucore-Lab02&quot; class=&quot;headerlink&quot; title=&quot;Ucore Lab02&quot;&gt;&lt;/a&gt;Ucore Lab02&lt;/h1&gt;&lt;h1 id=&quot;一、操作系统原理&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/categories/Ucore/"/>
+    
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/tags/Ucore/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Ucore Lab07</title>
+    <link href="https://binn-xu.github.io/2020/05/16/ucore-lab07/"/>
+    <id>https://binn-xu.github.io/2020/05/16/ucore-lab07/</id>
+    <published>2020-05-16T07:09:23.000Z</published>
+    <updated>2020-07-15T11:02:06.817Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Ucore-Lab07&quot;&gt;&lt;a href=&quot;#Ucore-Lab07&quot; class=&quot;headerlink&quot; title=&quot;Ucore Lab07&quot;&gt;&lt;/a&gt;Ucore Lab07&lt;/h1&gt;&lt;h1 id=&quot;一、-操作系统原理&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/categories/Ucore/"/>
+    
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/tags/Ucore/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Ucore Lab06</title>
+    <link href="https://binn-xu.github.io/2020/05/16/ucore-lab06/"/>
+    <id>https://binn-xu.github.io/2020/05/16/ucore-lab06/</id>
+    <published>2020-05-16T07:09:23.000Z</published>
+    <updated>2020-07-15T10:02:02.689Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Ucore-Lab06&quot;&gt;&lt;a href=&quot;#Ucore-Lab06&quot; class=&quot;headerlink&quot; title=&quot;Ucore Lab06&quot;&gt;&lt;/a&gt;Ucore Lab06&lt;/h1&gt;&lt;h1 id=&quot;一、-操作系统原理&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/categories/Ucore/"/>
+    
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/tags/Ucore/"/>
+    
+  </entry>
   
   <entry>
     <title>Ucore Lab05</title>
@@ -30,6 +134,58 @@
         
         
           &lt;h1 id=&quot;Ucore-Lab05&quot;&gt;&lt;a href=&quot;#Ucore-Lab05&quot; class=&quot;headerlink&quot; title=&quot;Ucore Lab05&quot;&gt;&lt;/a&gt;Ucore Lab05&lt;/h1&gt;&lt;h1 id=&quot;一、-操作系统原理&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/categories/Ucore/"/>
+    
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/tags/Ucore/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Ucore Lab03</title>
+    <link href="https://binn-xu.github.io/2020/05/16/ucore-lab03/"/>
+    <id>https://binn-xu.github.io/2020/05/16/ucore-lab03/</id>
+    <published>2020-05-16T07:09:23.000Z</published>
+    <updated>2020-07-15T09:49:55.586Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Ucore-Lab03&quot;&gt;&lt;a href=&quot;#Ucore-Lab03&quot; class=&quot;headerlink&quot; title=&quot;Ucore Lab03&quot;&gt;&lt;/a&gt;Ucore Lab03&lt;/h1&gt;&lt;h1 id=&quot;一、-操作系统原理&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/categories/Ucore/"/>
+    
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/tags/Ucore/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Ucore Lab01</title>
+    <link href="https://binn-xu.github.io/2020/05/16/ucore-lab01/"/>
+    <id>https://binn-xu.github.io/2020/05/16/ucore-lab01/</id>
+    <published>2020-05-16T07:09:23.000Z</published>
+    <updated>2020-07-15T11:04:12.261Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Ucore-Lab01&quot;&gt;&lt;a href=&quot;#Ucore-Lab01&quot; class=&quot;headerlink&quot; title=&quot;Ucore Lab01&quot;&gt;&lt;/a&gt;Ucore Lab01&lt;/h1&gt;&lt;h1 id=&quot;一、操作系统原理&quot;&gt;&lt;a
         
       
     
