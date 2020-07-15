@@ -329,7 +329,7 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/25.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
@@ -488,11 +488,11 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Redis 内置了复制（Replication），LUA脚本（Lua scripting）， LRU驱动事件（LRU eviction），事务（Transactions） 和不同级别的磁盘持久化（Persistence），并通过 Redis哨兵（Sentinel）和自动分区（Cluster）提供高可用性（High Availability）。</p>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Redis 内置了复制（Replication），LUA脚本（Lua scripting）， LRU驱动事件（LRU eviction），事务（Transactions） 和不同级别的磁盘持久化（Persistence），并通过 Redis哨兵（Sentinel）和自动分区（Cluster）提供高可用性（High Availability）。</p>
 <a id="more"></a>
 
 
-<h2 id="一、I-O-多路复用（-I-O-Multiplexing）"><a href="#一、I-O-多路复用（-I-O-Multiplexing）" class="headerlink" title="一、I/O 多路复用（ I/O Multiplexing）"></a>一、I/O 多路复用（ I/O Multiplexing）</h2><h3 id="1-1、传统-I-O-数据拷贝"><a href="#1-1、传统-I-O-数据拷贝" class="headerlink" title="1.1、传统 I/O 数据拷贝"></a>1.1、传统 I/O 数据拷贝</h3><p>当应用程序执行 read 系统调用读取文件描述符（FD）的时候，如果这块数据已经存在于用户进程的页内存中，就直接从内存中读取数据。如果数据不存在，则先将数据从磁盘加载数据到内核缓冲区中，再从内核缓冲区拷贝到用户进程的页内存中。（两次拷贝，两次 user 和 kernel 的上下文切换）。</p>
+<h1 id="一、I-O-多路复用（-I-O-Multiplexing）"><a href="#一、I-O-多路复用（-I-O-Multiplexing）" class="headerlink" title="一、I/O 多路复用（ I/O Multiplexing）"></a>一、I/O 多路复用（ I/O Multiplexing）</h1><h2 id="1-1、传统-I-O-数据拷贝"><a href="#1-1、传统-I-O-数据拷贝" class="headerlink" title="1.1、传统 I/O 数据拷贝"></a>1.1、传统 I/O 数据拷贝</h2><p>当应用程序执行 read 系统调用读取文件描述符（FD）的时候，如果这块数据已经存在于用户进程的页内存中，就直接从内存中读取数据。如果数据不存在，则先将数据从磁盘加载数据到内核缓冲区中，再从内核缓冲区拷贝到用户进程的页内存中。（两次拷贝，两次 user 和 kernel 的上下文切换）。</p>
 <p>为了解决阻塞的问题，我们有几个思路。<br>1、在服务端创建多个线程或者使用线程池，但是在高并发的情况下需要的线程会很多，系统无法承受，而且创建和释放线程都需要消耗资源。<br>2、由请求方定期轮询，在数据准备完毕后再从内核缓存缓冲区复制数据到用户空间（非阻塞式 I/O），这种方式会存在一定的延迟。</p>
 <h2 id="1-2、redis是怎么使用单线程去处理多个客户端请求？"><a href="#1-2、redis是怎么使用单线程去处理多个客户端请求？" class="headerlink" title="1.2、redis是怎么使用单线程去处理多个客户端请求？"></a>1.2、redis是怎么使用单线程去处理多个客户端请求？</h2><p>答案：I/O 多路复用（ I/O Multiplexing）<br>I/O 指的是网络 I/O。<br>多路指的是多个 TCP 连接（Socket 或 Channel）。<br>复用指的是复用一个或多个线程。<br>它的基本原理就是不再由应用程序自己监视连接，而是由内核替应用程序监视文件描述符。</p>
 <p> 客户端在操作的时候，会产生具有不同事件类型的 socket。在服务端，I/O 多路复<br>用程序（I/O Multiplexing Module）会把消息放入队列中，然后通过文件事件分派器（File<br>event Dispatcher），转发到不同的事件处理器中。  </p>
@@ -614,7 +614,7 @@ for ( ; ; ) {
     close(listenfd);
     return 0;
 }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="二、-内存回收"><a href="#二、-内存回收" class="headerlink" title="二、 内存回收"></a>二、 内存回收</h2><h3 id="2-1、内存回收——-LRU-淘汰原理"><a href="#2-1、内存回收——-LRU-淘汰原理" class="headerlink" title="2.1、内存回收—— LRU 淘汰原理"></a>2.1、内存回收—— LRU 淘汰原理</h3><h4 id="问题1：基于一个数据结构做缓存，怎么实现-LRU——最长时间不被访问的元素在超过容量时删除？"><a href="#问题1：基于一个数据结构做缓存，怎么实现-LRU——最长时间不被访问的元素在超过容量时删除？" class="headerlink" title="问题1：基于一个数据结构做缓存，怎么实现 LRU——最长时间不被访问的元素在超过容量时删除？"></a>问题1：基于一个数据结构做缓存，怎么实现 LRU——最长时间不被访问的元素在超过容量时删除？</h4><p>常规的哈希表+双向链表<br>但存在的问题在于，基于传统的LRU算法实现Redis LRU需要额外的数据结构存储，消耗内存</p>
+<h1 id="二、-内存回收"><a href="#二、-内存回收" class="headerlink" title="二、 内存回收"></a>二、 内存回收</h1><h2 id="2-1、内存回收——-LRU-淘汰原理"><a href="#2-1、内存回收——-LRU-淘汰原理" class="headerlink" title="2.1、内存回收—— LRU 淘汰原理"></a>2.1、内存回收—— LRU 淘汰原理</h2><h4 id="问题1：基于一个数据结构做缓存，怎么实现-LRU——最长时间不被访问的元素在超过容量时删除？"><a href="#问题1：基于一个数据结构做缓存，怎么实现-LRU——最长时间不被访问的元素在超过容量时删除？" class="headerlink" title="问题1：基于一个数据结构做缓存，怎么实现 LRU——最长时间不被访问的元素在超过容量时删除？"></a>问题1：基于一个数据结构做缓存，怎么实现 LRU——最长时间不被访问的元素在超过容量时删除？</h4><p>常规的哈希表+双向链表<br>但存在的问题在于，基于传统的LRU算法实现Redis LRU需要额外的数据结构存储，消耗内存</p>
 <p>Redis LRU 对传统的 LRU 算法进行了改良，通过随机采样来调整算法的精度。<br>如果淘汰策略是 LRU，则根据配置的采样值 maxmemory_samples（默认是 5 个）,<br>随机从数据库中选择 m 个 key, 淘汰其中热度最低的 key 对应的缓存数据。所以采样参数m配置的数值越大, 就越能精确的查找到待淘汰的缓存数据,但是也消耗更多的CPU计算,执行效率降低。<br>而听说 Redis LRU 算法在 sample 为 10 的情况下，已经能接近传统 LRU 算法了</p>
 <h4 id="问题2：如何找出热度最低的数据？"><a href="#问题2：如何找出热度最低的数据？" class="headerlink" title="问题2：如何找出热度最低的数据？"></a>问题2：如何找出热度最低的数据？</h4><p>Redis 中所有对象结构都有一个 lru 字段, 且使用了 unsigned 的低 24 位，这个字段用来记录对象的热度。对象被创建时会记录 lru 值。在被访问的时候也会更新 lru 的值。</p>
 <p>源码：server.c</p>
@@ -639,7 +639,7 @@ unsigned long long estimateObjectIdleTime(robj *o) {
         return (lruclock + (LRU_CLOCK_MAX - o->lru)) *LRU_CLOCK_RESOLUTION;
     }
 }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="2-1、内存回收——-LFU-淘汰原理"><a href="#2-1、内存回收——-LFU-淘汰原理" class="headerlink" title="2.1、内存回收—— LFU 淘汰原理"></a>2.1、内存回收—— LFU 淘汰原理</h3><pre class="line-numbers language-c++"><code class="language-c++">typedef struct redisObject {
+<h2 id="2-2、内存回收——-LFU-淘汰原理"><a href="#2-2、内存回收——-LFU-淘汰原理" class="headerlink" title="2.2、内存回收—— LFU 淘汰原理"></a>2.2、内存回收—— LFU 淘汰原理</h2><pre class="line-numbers language-c++"><code class="language-c++">typedef struct redisObject {
     unsigned type:4;
     unsigned encoding:4;
     unsigned lru:LRU_BITS; /* LRU time (relative to global lru_clock) or
@@ -649,22 +649,22 @@ unsigned long long estimateObjectIdleTime(robj *o) {
     void *ptr;
 } robj;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>  当这 24 bits 用作 LFU 时，其被分为两部分：高 16 位用来记录访问时间（低 8 位用来记录访问频率，简称 counter）。counter 是用基于概率的对数计数器实现的，8 位可以表示百万次的访问频率，对象被读写的时候，lfu 的值会被更新。  </p>
-<h2 id="三、Redis的持久化方案"><a href="#三、Redis的持久化方案" class="headerlink" title="三、Redis的持久化方案"></a>三、Redis的持久化方案</h2><h3 id="3-1-RDB"><a href="#3-1-RDB" class="headerlink" title="3.1 RDB"></a>3.1 RDB</h3><p>RDB 是一个非常紧凑(compact)的文件，它保存了 redis 在某个时间点上的数据集。这种文件非常适合用于进行备份和灾难恢复。</p>
+<h1 id="三、Redis的持久化方案"><a href="#三、Redis的持久化方案" class="headerlink" title="三、Redis的持久化方案"></a>三、Redis的持久化方案</h1><h2 id="3-1、RDB"><a href="#3-1、RDB" class="headerlink" title="3.1、RDB"></a>3.1、RDB</h2><p>RDB 是一个非常紧凑(compact)的文件，它保存了 redis 在某个时间点上的数据集。这种文件非常适合用于进行备份和灾难恢复。</p>
 <p>这里就提一下bgsave，执行 bgsave 时，Redis 会在后台异步进行快照操作的同时还可以响应客户端请求。<br>具体操作是 Redis 进程执行 fork 操作创建子进程（copy-on-write），RDB 持久化过程由子进程负责，完成后自动结束。它不会记录 fork 之后后续的命令。阻塞只发生在fork 阶段，一般时间很短。</p>
 <p>如果数据相对来说比较重要，希望将损失降到最小，则可以使用 AOF 方式进行持久</p>
 <p>可以手动调用 lastsave 命令查看最近一次成功生成快照的时间  </p>
-<h3 id="3-2、AOF"><a href="#3-2、AOF" class="headerlink" title="3.2、AOF"></a>3.2、AOF</h3><p> AOF 持久化是 Redis 不断将写命令记录到 AOF 文件中，随着 Redis 不断的进行，AOF 的文件会越来越大，文件越大，占用服务器内存越大以及 AOF 恢复要求时间越长。<br>为了解决这个问题，Redis 新增了重写机制，当 AOF 文件的大小超过所设定的阈值时，Redis 就会启动 AOF 文件的内容压缩，只保留可以恢复数据的最小指令集。AOF 文件重写并不是对原文件进行重新整理，而是直接读取服务器现有的键值对，然后用一条命令去代替之前记录这个键值对的多条命令，生成一个新的文件后去替换原来的 AOF 文件 </p>
+<h2 id="3-2、AOF"><a href="#3-2、AOF" class="headerlink" title="3.2、AOF"></a>3.2、AOF</h2><p> AOF 持久化是 Redis 不断将写命令记录到 AOF 文件中，随着 Redis 不断的进行，AOF 的文件会越来越大，文件越大，占用服务器内存越大以及 AOF 恢复要求时间越长。<br>为了解决这个问题，Redis 新增了重写机制，当 AOF 文件的大小超过所设定的阈值时，Redis 就会启动 AOF 文件的内容压缩，只保留可以恢复数据的最小指令集。AOF 文件重写并不是对原文件进行重新整理，而是直接读取服务器现有的键值对，然后用一条命令去代替之前记录这个键值对的多条命令，生成一个新的文件后去替换原来的 AOF 文件 </p>
 <p>可以使用命令 bgrewriteaof 来重写。</p>
-<h2 id="四、Redis集群高可用下的数据分片"><a href="#四、Redis集群高可用下的数据分片" class="headerlink" title="四、Redis集群高可用下的数据分片"></a>四、Redis集群高可用下的数据分片</h2><p>  数据分片有几个关键的问题需要解决：<br>1、数据怎么相对均匀地分片<br>2、客户端怎么访问到相应的节点和数据<br>3、重新分片的过程，怎么保证正常服务  </p>
+<h1 id="四、Redis集群高可用下的数据分片"><a href="#四、Redis集群高可用下的数据分片" class="headerlink" title="四、Redis集群高可用下的数据分片"></a>四、Redis集群高可用下的数据分片</h1><p>  数据分片有几个关键的问题需要解决：<br>1、数据怎么相对均匀地分片<br>2、客户端怎么访问到相应的节点和数据<br>3、重新分片的过程，怎么保证正常服务  </p>
 <p>针对Redis集群高可用下的数据分片，Redis 既没有用哈希取模，也没有用一致性哈希，而是用虚拟槽来实现的。Redis 创建了 16384 个槽（slot），每个节点负责一定区间的 slot。Redis 的每个 master 节点维护一个 16384 位（2048bytes=2KB）的位序列，比如：序列的第 0 位是 1，就代表第一个 slot 是它负责；序列的第 1 位是 0，代表第二个 slot不归它负责。当我们敲下set xx xx时候，Redis会通过对 key 用 CRC16 算法计算再%16384得到一个 slot的值，数据落到负责这个 slot 的 Redis 节点上。于是乎key 与 slot 的关系是永远不会变的，会变的只有 slot 和 Redis 节点的关系  </p>
 <p>当然我们总有这样的需求，希望不同的key落到相同的Redis节点上，以减少网络io的次数，那么我们就可以通过</p>
 <pre><code>set a{qs}a 1</code></pre><p>Redis 在计算槽编号的时候只会获取{}之间的字符串进行槽编号计算，  在 key 里面加入相同的{hash tag}保证上面两个不同的键被计算进入相同的槽中，这样就会落入redis集群中同一个节点中</p>
-<h2 id="五、Redis数据与数据库数据的一致性问题"><a href="#五、Redis数据与数据库数据的一致性问题" class="headerlink" title="五、Redis数据与数据库数据的一致性问题"></a>五、Redis数据与数据库数据的一致性问题</h2><p><em><em>矛盾集中在：到底是先更新数据库，再删除缓存，还是先删除缓存，再更新数据库  </em></em></p>
-<h3 id="5-1-先更新数据库，-再删除缓存"><a href="#5-1-先更新数据库，-再删除缓存" class="headerlink" title="5.1 先更新数据库， 再删除缓存"></a>5.1 先更新数据库， 再删除缓存</h3><p>正常情况：<br>更新数据库，成功。<br>删除缓存，成功。</p>
+<h1 id="五、Redis数据与数据库数据的一致性问题"><a href="#五、Redis数据与数据库数据的一致性问题" class="headerlink" title="五、Redis数据与数据库数据的一致性问题"></a>五、Redis数据与数据库数据的一致性问题</h1><p><em><em>矛盾集中在：到底是先更新数据库，再删除缓存，还是先删除缓存，再更新数据库  </em></em></p>
+<h2 id="5-1、先更新数据库，-再删除缓存"><a href="#5-1、先更新数据库，-再删除缓存" class="headerlink" title="5.1、先更新数据库， 再删除缓存"></a>5.1、先更新数据库， 再删除缓存</h2><p>正常情况：<br>更新数据库，成功。<br>删除缓存，成功。</p>
 <p>异常情况：<br>1、更新数据库失败，程序捕获异常，不会走到下一步，所以数据不会出现不一致。<br>2、更新数据库成功，删除缓存失败。数据库是新数据，缓存是旧数据，发生了不一致的情况。</p>
 <p><strong>异步更新缓存：</strong></p>
 <p>因为更新数据库时会往 binlog 写入日志，所以我们可以通过一个服务来监听 binlog的变化（比如阿里的canal），然后在客户端完成删除 key 的操作。如果删除失败的话，再发送到消息队列。总之，对于后删除缓存失败的情况，我们的做法是不断地重试删除，直到成功。（摘自网络）</p>
-<h3 id="5-2-先删除缓存，-再更新数据库"><a href="#5-2-先删除缓存，-再更新数据库" class="headerlink" title="5.2 先删除缓存， 再更新数据库"></a>5.2 先删除缓存， 再更新数据库</h3><p>正常情况：<br>删除缓存，成功。<br>更新数据库，成功。<br>异常情况：<br>1、删除缓存，程序捕获异常，不会走到下一步，所以数据不会出现不一致。<br>2、删除缓存成功，更新数据库失败。 因为以数据库的数据为准，所以不存在数据不一致的情况。</p>
+<h2 id="5-2-先删除缓存，-再更新数据库"><a href="#5-2-先删除缓存，-再更新数据库" class="headerlink" title="5.2 先删除缓存， 再更新数据库"></a>5.2 先删除缓存， 再更新数据库</h2><p>正常情况：<br>删除缓存，成功。<br>更新数据库，成功。<br>异常情况：<br>1、删除缓存，程序捕获异常，不会走到下一步，所以数据不会出现不一致。<br>2、删除缓存成功，更新数据库失败。 因为以数据库的数据为准，所以不存在数据不一致的情况。</p>
 <p><strong>看起来好像没问题，但是如果有程序并发操作的情况下：<br>1）线程 A 需要更新数据，首先删除了 Redis 缓存<br>2）线程 B 查询数据，发现缓存不存在，到数据库查询旧值，写入 Redis，返回<br>3）线程 A 更新了数据库<br>这个时候，Redis 是旧的值，数据库是新的值，发生了数据不一致的情况。<br>那问题就变成了：能不能让对同一条数据的访问串行化呢？代码肯定保证不了，因为有多个线程，即使做了任务队列也可能有多个服务实例。数据库也保证不了，因为会有多个数据库的连接。只有一个数据库只提供一个连接的情况下，才能保证读写的操作是串行的，或者我们把所有的读写请求放到同一个内存队列当中，但是这种情况吞吐量太低了。</strong><br>所以我们有一种延时双删的策略，在写入数据之后，再删除一次缓存。</p>
 <p>A 线程：<br>1）删除缓存<br>2）更新数据库<br>3）休眠 500ms（这个时间，依据读取数据的耗时而定）<br>4）再次删除缓存</p>
 
@@ -1005,48 +1005,51 @@ unsigned long long estimateObjectIdleTime(robj *o) {
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
-            </div>
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/02/16/redis-na-me-kuai-de-bei-hou/">
+                <a href="/2020/05/16/ucore-lab05/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="Redis那么快的背后">
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Ucore Lab05">
                         
-                        <span class="card-title">Redis那么快的背后</span>
+                        <span class="card-title">Ucore Lab05</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            前言Redis 内置了复制（Replication），LUA脚本（Lua scripting）， LRU驱动事件（LRU eviction），事务（Transactions） 和不同级别的磁盘持久化（Persistence），并通过 Red
+                            Ucore Lab05一、    操作系统原理1.1、  进程的状态转换进程的三态模型
+运行态指进程占有处理器运行，处于运行态的进程个数不能大于处理器个数
+
+就绪态指进程具备运行条件等待处理器运行
+
+等待态指进程由于等待资源、输入输出、信号
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-02-16
-                            </span>
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-16
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/Java/" class="post-category" target="_blank">
-                                    Java
+                            <a href="/categories/Ucore/" class="post-category" target="_blank">
+                                    Ucore
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Java/" target="_blank">
-                        <span class="chip bg-color">Java</span>
+                    <a href="/tags/Ucore/" target="_blank">
+                        <span class="chip bg-color">Ucore</span>
                     </a>
                     
                 </div>
@@ -1064,7 +1067,7 @@ unsigned long long estimateObjectIdleTime(robj *o) {
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="Redis那么快的背后">
+                        <img src="/medias/featureimages/25.jpg" class="responsive-img" alt="Redis那么快的背后">
                         
                         <span class="card-title">Redis那么快的背后</span>
                     </div>
