@@ -329,7 +329,7 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/25.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/26.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
@@ -470,7 +470,7 @@
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-02-16
+                    2020-03-14
                 </div>
 
                 <div class="post-author info-break-policy">
@@ -488,15 +488,183 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Redis 内置了复制（Replication），LUA脚本（Lua scripting）， LRU驱动事件（LRU eviction），事务（Transactions） 和不同级别的磁盘持久化（Persistence），并通过 Redis哨兵（Sentinel）和自动分区（Cluster）提供高可用性（High Availability）。</p>
-<a id="more"></a>
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Redis 内置了复制（Replication），LUA脚本（Lua scripting）， LRU驱动事件（LRU eviction），事务（Transactions） 和不同级别的磁盘持久化（Persistence），并通过 Redis哨兵（Sentinel）和自动分区（Cluster）提供高可用性（High Availability）。</p>
+<h1 id="一、-基础数据结构"><a href="#一、-基础数据结构" class="headerlink" title="一、 基础数据结构"></a>一、 基础数据结构</h1><h2 id="1-1、Hash-哈希"><a href="#1-1、Hash-哈希" class="headerlink" title="1.1、Hash 哈希"></a>1.1、Hash 哈希</h2><h3 id="存储（-实现）-原理"><a href="#存储（-实现）-原理" class="headerlink" title="存储（ 实现） 原理"></a>存储（ 实现） 原理</h3><p>Redis 的 Hash 本身也是一个 KV 的结构，类似于 Java 中的 HashMap。<br>外层的哈希（Redis KV 的实现）只用到了 hashtable。当存储 hash 数据类型时，<br>我们把它叫做内层的哈希。内层的哈希底层可以使用两种数据结构实现：</p>
+<ul>
+<li>ziplist：OBJ_ENCODING_ZIPLIST（压缩列表）</li>
+<li>hashtable：OBJ_ENCODING_HT（哈希表）</li>
+</ul>
+<h3 id="ziplist-压缩列表"><a href="#ziplist-压缩列表" class="headerlink" title="ziplist 压缩列表"></a>ziplist 压缩列表</h3><h4 id="ziplist-压缩列表是什么？"><a href="#ziplist-压缩列表是什么？" class="headerlink" title="ziplist 压缩列表是什么？"></a>ziplist 压缩列表是什么？</h4><p>ziplist 是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，是一种时间换空间的思想，典型的符合计算机cache缓存的数据结构，只用在字段个数少，字段值小的场景里面。<br>ziplist 的内部结构？<br>ziplist.c 源码第 16 行的注释：<br>* <zlbytes> <zltail> <zllen> <entry> <entry> … <entry> <zlend></zlend></entry></entry></entry></zllen></zltail></zlbytes></p>
+<pre class="line-numbers language-c++"><code class="language-c++">typedef struct zlentry {
+    unsigned int prevrawlensize; /* 上一个链表节点占用的长度 */
+    unsigned int prevrawlen; /* 存储上一个链表节点的长度数值所需要的字节数 */
+    unsigned int lensize; /* 存储当前链表节点长度数值所需要的字节数 */
+    unsigned int len; /* 当前链表节点占用的长度 */
+    unsigned int headersize; /* 当前链表节点的头部大小（prevrawlensize + lensize） ， 即非数据域的大小 */
+    unsigned char encoding; /* 编码方式 */
+    unsigned char *p; /* 压缩链表以字符串的形式保存， 该指针指向当前节点起始位置 */
+} zlentry;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="问题：什么时候使用-ziplist-存储？"><a href="#问题：什么时候使用-ziplist-存储？" class="headerlink" title="问题：什么时候使用 ziplist 存储？"></a>问题：什么时候使用 ziplist 存储？</h4><p>当 hash 对象同时满足以下两个条件的时候，使用 ziplist 编码：<br>1）所有的键值对的健和值的字符串长度都小于等于 64byte（一个英文字母<br>一个字节）；<br>2）哈希对象保存的键值对数量小于 512 个。</p>
+<p>src/redis.conf 配置 </p>
+<pre class="line-numbers language-c++"><code class="language-c++">hash-max-ziplist-value 64      // ziplist 中最大能存放的值长度
+hash-max-ziplist-entries 512 // ziplist 中最多能存放的 entry 节点数量<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>一个哈希对象超过配置的阈值（键和值的长度有&gt;64byte，键值对个数&gt;512 个）时，会转换成哈希表（hashtable）。</p>
+<pre class="line-numbers language-c++"><code class="language-c++">/* 源码位置： t_hash.c ， 当达字段个数超过阈值， 使用 HT 作为编码 */
+if (hashTypeLength(o) > server.hash_max_ziplist_entries)
+    hashTypeConvert(o, OBJ_ENCODING_HT);
+/*源码位置： t_hash.c， 当字段值长度过大， 转为 HT */
+for (i = start; i <= end; i++) {
+    if (sdsEncodedObject(argv[i]) &&
+        sdslen(argv[i]->ptr) > server.hash_max_ziplist_value)
+    {
+        hashTypeConvert(o, OBJ_ENCODING_HT);
+        break;
+    }
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="hashtable（-dict）"><a href="#hashtable（-dict）" class="headerlink" title="hashtable（ dict）"></a>hashtable（ dict）</h3><p>Redis 的 KV 结构是通过一个 dictEntry 来实现的。<br>Redis 又对 dictEntry 进行了多层的封装。 </p>
+<p>hashtable（ dict）</p>
+<pre class="line-numbers language-c++"><code class="language-c++">typedef struct dictEntry {
+    void *key; /* key 关键字定义 */
+    union {
+    void *val; uint64_t u64; /* value 定义 */
+    int64_t s64; double d;
+} v;
+    struct dictEntry *next; /* 指向下一个键值对节点 */
+} dictEntry;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>dictEntry 放到了 dictht（hashtable 里面）：  </p>
+<pre class="line-numbers language-c++"><code class="language-c++">/* This is our hash table structure. Every dictionary has two of this as we
+* implement incremental rehashing, for the old to the new table. */
+typedef struct dictht {
+    dictEntry **table; /* 哈希表数组 */
+    unsigned long size; /* 哈希表大小 */
+    unsigned long sizemask; /* 掩码大小， 用于计算索引值。 总是等于 size-1 */
+    unsigned long used; /* 已有节点数 */
+} dictht;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>ht 放到了 dict 里面 :</p>
+<pre class="line-numbers language-c++"><code class="language-c++">typedef struct dict {
+    dictType *type; /* 字典类型 */
+    void *privdata; /* 私有数据 */
+    dictht ht[2]; /* 一个字典有两个哈希表 */
+    long rehashidx; /* rehash 索引 */
+    unsigned long iterators; /* 当前正在使用的迭代器数量 */
+} dict;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>从最底层到最高层 dictEntry——dictht——dict——OBJ_ENCODING_HT<br>总结：哈希的存储结构  </p>
+<img src="https://gitee.com/the-time-is-limitted/blog-img/raw/master/img/20200804140829.png" alt="image-20200804114710883" style="zoom:75%;">
 
+<h4 id="rehash-的步骤："><a href="#rehash-的步骤：" class="headerlink" title="rehash 的步骤："></a>rehash 的步骤：</h4><p>1、为字符 ht[1]哈希表分配空间，这个哈希表的空间大小取决于要执行的操作，以<br>及 ht[0]当前包含的键值对的数量。<br>扩展：ht[1]的大小为第一个大于等于 ht[0].used*2。<br>2、将所有的 ht[0]上的节点 rehash 到 ht[1]上，重新计算 hash 值和索引，然后放<br>入指定的位置。<br>3、当 ht[0]全部迁移到了 ht[1]之后，释放 ht[0]的空间，将 ht[1]设置为 ht[0]表，<br>并创建新的 ht[1]，为下次 rehash 做准备。  </p>
+<p>扩容方法 dictExpand（源码 dict.c）  </p>
+<pre class="line-numbers language-C++"><code class="language-C++">static int dictExpand(dict *ht, unsigned long size) {
+    dict n; /* the new hashtable */
+    unsigned long realsize = _dictNextPower(size), i;
+    ​
+    /* the size is invalid if it is smaller than the number of
+    * elements already inside the hashtable */
+    if (ht->used > size)
+        return DICT_ERR;
+    ​
+    _dictInit(&n, ht->type, ht->privdata);
+    n.size = realsize;
+    n.sizemask = realsize-1;
+    n.table = calloc(realsize,sizeof(dictEntry*));
+    ​
+    /* Copy all the elements from the old to the new table:
+    * note that if the old hash table is empty ht->size is zero,
+    * so dictExpand just creates an hash table. */
+    n.used = ht->used;
+    for (i = 0; i < ht->size && ht->used > 0; i++) {
+        dictEntry *he, *nextHe;
+    ​
+        if (ht->table[i] == NULL) continue;
+    ​
+    /* For each hash entry on this slot... */
+    he = ht->table[i];
+    while(he) {
+        unsigned int h;
+    ​
+        nextHe = he->next;
+    /* Get the new element index */
+        h = dictHashKey(ht, he->key) & n.sizemask;
+        he->next = n.table[h];
+        n.table[h] = he;
+        ht->used--;
+    /* Pass to the next element */
+            he = nextHe;
+        }
+    }
+    assert(ht->used == 0);
+    free(ht->table);
+​
+/* Remap the new hashtable in the old */
+    *ht = n;
+    return DICT_OK;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="1-2、List-列表"><a href="#1-2、List-列表" class="headerlink" title="1.2、List 列表"></a>1.2、List 列表</h2><p>quicklist（快速列表）是 ziplist 和 linkedlist 的结合体</p>
+<p>源码：quicklist.h</p>
+<pre class="line-numbers language-c++"><code class="language-c++">typedef struct quicklist {
+    quicklistNode *head; /* 指向双向列表的表头 */
+    quicklistNode *tail; /* 指向双向列表的表尾 */
+    unsigned long count; 
+    unsigned long len; 
+    int fill : 16; /* 所有的 ziplist 中一共存了多少个元素 */ 
+    unsigned long len; /* 双向链表的长度， node 的数量 */
+    int fill : 16; /* fill factor for individual nodes */
+    unsigned int compress : 16; /* 压缩深度， 0： 不压缩； */
+} quicklist;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>quicklistNode 中的*zl 指向一个 ziplist，一个 ziplist 可以存放多个元素  </p>
+<pre class="line-numbers language-c++"><code class="language-c++">typedef struct quicklistNode {
+    struct quicklistNode *prev; /* 前一个节点 */
+    struct quicklistNode *next; /* 后一个节点 */
+    unsigned char *zl; /* 指向实际的 ziplist */
+    unsigned int sz; /* 当前 ziplist 占用多少字节 */
+    unsigned int count : 16; /* 当前 ziplist 中存储了多少个元素， 占 16bit（下同） ， 最大 65536 个 */
+    unsigned int encoding : 2; /* 是否采用了 LZF 压缩算法压缩节点， 1： RAW 2： LZF */
+    unsigned int container : 2; /* 2： ziplist， 未来可能支持其他结构存储 */
+    unsigned int recompress : 1; /* 当前 ziplist 是不是已经被解压出来作临时使用 */
+    unsigned int attempted_compress : 1; /* 测试用 */
+    unsigned int extra : 10; /* 预留给未来使用 */
+} quicklistNode;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<img src="https://gitee.com/the-time-is-limitted/blog-img/raw/master/img/20200804140830.png" alt="image-20200804112353774" style="zoom:50%;">
 
-<h2 id="一、I-O-多路复用（-I-O-Multiplexing）"><a href="#一、I-O-多路复用（-I-O-Multiplexing）" class="headerlink" title="一、I/O 多路复用（ I/O Multiplexing）"></a>一、I/O 多路复用（ I/O Multiplexing）</h2><h3 id="1-1、传统-I-O-数据拷贝"><a href="#1-1、传统-I-O-数据拷贝" class="headerlink" title="1.1、传统 I/O 数据拷贝"></a>1.1、传统 I/O 数据拷贝</h3><p>当应用程序执行 read 系统调用读取文件描述符（FD）的时候，如果这块数据已经存在于用户进程的页内存中，就直接从内存中读取数据。如果数据不存在，则先将数据从磁盘加载数据到内核缓冲区中，再从内核缓冲区拷贝到用户进程的页内存中。（两次拷贝，两次 user 和 kernel 的上下文切换）。</p>
+<h2 id="1-3、Zset有序列表"><a href="#1-3、Zset有序列表" class="headerlink" title="1.3、Zset有序列表"></a>1.3、Zset有序列表</h2><p>同时满足以下条件时使用 ziplist 编码：</p>
+<ul>
+<li>元素数量小于 128 个</li>
+<li>所有 member 的长度都小于 64 字节  </li>
+</ul>
+<p>超过阈值之后，使用 skiplist+dict 存储  </p>
+<p>源码：server.h</p>
+<pre class="line-numbers language-c++"><code class="language-c++">typedef struct zskiplistNode {
+    sds ele; /* zset 的元素 */
+    double score; /* 分值 */
+    struct zskiplistNode *backward; /* 后退指针 */
+    struct zskiplistLevel {
+    struct zskiplistNode *forward; /* 前进指针， 对应 level 的下一个节点 */
+    unsigned long span; /* 从当前节点到下一个节点的跨度（跨越的节点数） */
+    } level[]; /* 层 */
+} zskiplistNode;
+
+typedef struct zskiplist {
+    struct zskiplistNode *header, *tail; /* 指向跳跃表的头结点和尾节点 */
+    unsigned long length; /* 跳跃表的节点数 */
+    int level; /* 最大的层数 */
+} zskiplist;
+
+typedef struct zset {  
+    dict *dict;
+    zskiplist *zsl;
+} zset;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>随机获取层数的函数：<br>源码：t_zset.c</p>
+<pre class="line-numbers language-c++"><code class="language-c++">int zslRandomLevel(void) {
+    int level = 1;
+    while ((random()&0xFFFF) < (ZSKIPLIST_P * 0xFFFF))
+    level += 1;
+    return (level<ZSKIPLIST_MAXLEVEL) ? level : ZSKIPLIST_MAXLEVEL;
+}  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="二、I-O-多路复用（-I-O-Multiplexing）"><a href="#二、I-O-多路复用（-I-O-Multiplexing）" class="headerlink" title="二、I/O 多路复用（ I/O Multiplexing）"></a>二、I/O 多路复用（ I/O Multiplexing）</h1><h2 id="2-1、传统-I-O-数据拷贝"><a href="#2-1、传统-I-O-数据拷贝" class="headerlink" title="2.1、传统 I/O 数据拷贝"></a>2.1、传统 I/O 数据拷贝</h2><p>当应用程序执行 read 系统调用读取文件描述符（FD）的时候，如果这块数据已经存在于用户进程的页内存中，就直接从内存中读取数据。如果数据不存在，则先将数据从磁盘加载数据到内核缓冲区中，再从内核缓冲区拷贝到用户进程的页内存中。（两次拷贝，两次 user 和 kernel 的上下文切换）。</p>
 <p>为了解决阻塞的问题，我们有几个思路。<br>1、在服务端创建多个线程或者使用线程池，但是在高并发的情况下需要的线程会很多，系统无法承受，而且创建和释放线程都需要消耗资源。<br>2、由请求方定期轮询，在数据准备完毕后再从内核缓存缓冲区复制数据到用户空间（非阻塞式 I/O），这种方式会存在一定的延迟。</p>
-<h2 id="1-2、redis是怎么使用单线程去处理多个客户端请求？"><a href="#1-2、redis是怎么使用单线程去处理多个客户端请求？" class="headerlink" title="1.2、redis是怎么使用单线程去处理多个客户端请求？"></a>1.2、redis是怎么使用单线程去处理多个客户端请求？</h2><p>答案：I/O 多路复用（ I/O Multiplexing）<br>I/O 指的是网络 I/O。<br>多路指的是多个 TCP 连接（Socket 或 Channel）。<br>复用指的是复用一个或多个线程。<br>它的基本原理就是不再由应用程序自己监视连接，而是由内核替应用程序监视文件描述符。</p>
+<h2 id="2-2、redis是怎么使用单线程去处理多个客户端请求？"><a href="#2-2、redis是怎么使用单线程去处理多个客户端请求？" class="headerlink" title="2.2、redis是怎么使用单线程去处理多个客户端请求？"></a>2.2、redis是怎么使用单线程去处理多个客户端请求？</h2><p>答案：I/O 多路复用（ I/O Multiplexing）<br>I/O 指的是网络 I/O。<br>多路指的是多个 TCP 连接（Socket 或 Channel）。<br>复用指的是复用一个或多个线程。<br>它的基本原理就是不再由应用程序自己监视连接，而是由内核替应用程序监视文件描述符。</p>
 <p> 客户端在操作的时候，会产生具有不同事件类型的 socket。在服务端，I/O 多路复<br>用程序（I/O Multiplexing Module）会把消息放入队列中，然后通过文件事件分派器（File<br>event Dispatcher），转发到不同的事件处理器中。  </p>
-<p><img src="https://s2.ax1x.com/2020/02/26/3NfIOg.png" alt="avatar"></p>
+<img src="https://s2.ax1x.com/2020/02/26/3NfIOg.png" alt="avatar" style="zoom:50%;">
+
 <p>  多路复用有很多的实现，以 select 为例，当用户进程调用了多路复用器，进程会被阻塞。内核会监视多路复用器负责的所有 socket，当任何一个 socket 的数据准备好了，多路复用器就会返回。这时候用户进程再调用 read 操作，把数据从内核缓冲区拷贝到用户空间  </p>
 <p>select函数原型</p>
 <pre class="line-numbers language-c++"><code class="language-c++">#include <sys/select.h>
@@ -613,9 +781,9 @@ for ( ; ; ) {
     close(listenfd);
     return 0;
 }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="二、-内存回收"><a href="#二、-内存回收" class="headerlink" title="二、 内存回收"></a>二、 内存回收</h2><h3 id="2-1、内存回收——-LRU-淘汰原理"><a href="#2-1、内存回收——-LRU-淘汰原理" class="headerlink" title="2.1、内存回收—— LRU 淘汰原理"></a>2.1、内存回收—— LRU 淘汰原理</h3><h4 id="问题1：基于一个数据结构做缓存，怎么实现-LRU——最长时间不被访问的元素在超过容量时删除？"><a href="#问题1：基于一个数据结构做缓存，怎么实现-LRU——最长时间不被访问的元素在超过容量时删除？" class="headerlink" title="问题1：基于一个数据结构做缓存，怎么实现 LRU——最长时间不被访问的元素在超过容量时删除？"></a>问题1：基于一个数据结构做缓存，怎么实现 LRU——最长时间不被访问的元素在超过容量时删除？</h4><p>常规的哈希表+双向链表<br>但存在的问题在于，基于传统的LRU算法实现Redis LRU需要额外的数据结构存储，消耗内存</p>
+<h1 id="三、-内存回收"><a href="#三、-内存回收" class="headerlink" title="三、 内存回收"></a>三、 内存回收</h1><h2 id="3-1、内存回收——-LRU-淘汰原理"><a href="#3-1、内存回收——-LRU-淘汰原理" class="headerlink" title="3.1、内存回收—— LRU 淘汰原理"></a>3.1、内存回收—— LRU 淘汰原理</h2><h3 id="问题1：基于一个数据结构做缓存，怎么实现-LRU——最长时间不被访问的元素在超过容量时删除？"><a href="#问题1：基于一个数据结构做缓存，怎么实现-LRU——最长时间不被访问的元素在超过容量时删除？" class="headerlink" title="问题1：基于一个数据结构做缓存，怎么实现 LRU——最长时间不被访问的元素在超过容量时删除？"></a>问题1：基于一个数据结构做缓存，怎么实现 LRU——最长时间不被访问的元素在超过容量时删除？</h3><p>常规的哈希表+双向链表<br>但存在的问题在于，基于传统的LRU算法实现Redis LRU需要额外的数据结构存储，消耗内存</p>
 <p>Redis LRU 对传统的 LRU 算法进行了改良，通过随机采样来调整算法的精度。<br>如果淘汰策略是 LRU，则根据配置的采样值 maxmemory_samples（默认是 5 个）,<br>随机从数据库中选择 m 个 key, 淘汰其中热度最低的 key 对应的缓存数据。所以采样参数m配置的数值越大, 就越能精确的查找到待淘汰的缓存数据,但是也消耗更多的CPU计算,执行效率降低。<br>而听说 Redis LRU 算法在 sample 为 10 的情况下，已经能接近传统 LRU 算法了</p>
-<h4 id="问题2：如何找出热度最低的数据？"><a href="#问题2：如何找出热度最低的数据？" class="headerlink" title="问题2：如何找出热度最低的数据？"></a>问题2：如何找出热度最低的数据？</h4><p>Redis 中所有对象结构都有一个 lru 字段, 且使用了 unsigned 的低 24 位，这个字段用来记录对象的热度。对象被创建时会记录 lru 值。在被访问的时候也会更新 lru 的值。</p>
+<h3 id="问题2：如何找出热度最低的数据？"><a href="#问题2：如何找出热度最低的数据？" class="headerlink" title="问题2：如何找出热度最低的数据？"></a>问题2：如何找出热度最低的数据？</h3><p>Redis 中所有对象结构都有一个 lru 字段, 且使用了 unsigned 的低 24 位，这个字段用来记录对象的热度。对象被创建时会记录 lru 值。在被访问的时候也会更新 lru 的值。</p>
 <p>源码：server.c</p>
 <pre class="line-numbers language-c++"><code class="language-c++">typedef struct redisObject {
     unsigned type:4;
@@ -638,7 +806,7 @@ unsigned long long estimateObjectIdleTime(robj *o) {
         return (lruclock + (LRU_CLOCK_MAX - o->lru)) *LRU_CLOCK_RESOLUTION;
     }
 }<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="2-1、内存回收——-LFU-淘汰原理"><a href="#2-1、内存回收——-LFU-淘汰原理" class="headerlink" title="2.1、内存回收—— LFU 淘汰原理"></a>2.1、内存回收—— LFU 淘汰原理</h3><pre class="line-numbers language-c++"><code class="language-c++">typedef struct redisObject {
+<h2 id="3-2、内存回收——-LFU-淘汰原理"><a href="#3-2、内存回收——-LFU-淘汰原理" class="headerlink" title="3.2、内存回收—— LFU 淘汰原理"></a>3.2、内存回收—— LFU 淘汰原理</h2><pre class="line-numbers language-c++"><code class="language-c++">typedef struct redisObject {
     unsigned type:4;
     unsigned encoding:4;
     unsigned lru:LRU_BITS; /* LRU time (relative to global lru_clock) or
@@ -648,22 +816,21 @@ unsigned long long estimateObjectIdleTime(robj *o) {
     void *ptr;
 } robj;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>  当这 24 bits 用作 LFU 时，其被分为两部分：高 16 位用来记录访问时间（低 8 位用来记录访问频率，简称 counter）。counter 是用基于概率的对数计数器实现的，8 位可以表示百万次的访问频率，对象被读写的时候，lfu 的值会被更新。  </p>
-<h2 id="三、Redis的持久化方案"><a href="#三、Redis的持久化方案" class="headerlink" title="三、Redis的持久化方案"></a>三、Redis的持久化方案</h2><h3 id="3-1-RDB"><a href="#3-1-RDB" class="headerlink" title="3.1 RDB"></a>3.1 RDB</h3><p>RDB 是一个非常紧凑(compact)的文件，它保存了 redis 在某个时间点上的数据集。这种文件非常适合用于进行备份和灾难恢复。</p>
+<h1 id="四、Redis的持久化方案"><a href="#四、Redis的持久化方案" class="headerlink" title="四、Redis的持久化方案"></a>四、Redis的持久化方案</h1><h2 id="4-1、-RDB"><a href="#4-1、-RDB" class="headerlink" title="4.1、 RDB"></a>4.1、 RDB</h2><p>RDB 是一个非常紧凑(compact)的文件，它保存了 redis 在某个时间点上的数据集。这种文件非常适合用于进行备份和灾难恢复。</p>
 <p>这里就提一下bgsave，执行 bgsave 时，Redis 会在后台异步进行快照操作的同时还可以响应客户端请求。<br>具体操作是 Redis 进程执行 fork 操作创建子进程（copy-on-write），RDB 持久化过程由子进程负责，完成后自动结束。它不会记录 fork 之后后续的命令。阻塞只发生在fork 阶段，一般时间很短。</p>
 <p>如果数据相对来说比较重要，希望将损失降到最小，则可以使用 AOF 方式进行持久</p>
 <p>可以手动调用 lastsave 命令查看最近一次成功生成快照的时间  </p>
-<h3 id="3-2、AOF"><a href="#3-2、AOF" class="headerlink" title="3.2、AOF"></a>3.2、AOF</h3><p> AOF 持久化是 Redis 不断将写命令记录到 AOF 文件中，随着 Redis 不断的进行，AOF 的文件会越来越大，文件越大，占用服务器内存越大以及 AOF 恢复要求时间越长。<br>为了解决这个问题，Redis 新增了重写机制，当 AOF 文件的大小超过所设定的阈值时，Redis 就会启动 AOF 文件的内容压缩，只保留可以恢复数据的最小指令集。AOF 文件重写并不是对原文件进行重新整理，而是直接读取服务器现有的键值对，然后用一条命令去代替之前记录这个键值对的多条命令，生成一个新的文件后去替换原来的 AOF 文件 </p>
+<h2 id="4-2、AOF"><a href="#4-2、AOF" class="headerlink" title="4.2、AOF"></a>4.2、AOF</h2><p> AOF 持久化是 Redis 不断将写命令记录到 AOF 文件中，随着 Redis 不断的进行，AOF 的文件会越来越大，文件越大，占用服务器内存越大以及 AOF 恢复要求时间越长。<br>为了解决这个问题，Redis 新增了重写机制，当 AOF 文件的大小超过所设定的阈值时，Redis 就会启动 AOF 文件的内容压缩，只保留可以恢复数据的最小指令集。AOF 文件重写并不是对原文件进行重新整理，而是直接读取服务器现有的键值对，然后用一条命令去代替之前记录这个键值对的多条命令，生成一个新的文件后去替换原来的 AOF 文件 </p>
 <p>可以使用命令 bgrewriteaof 来重写。</p>
-<h2 id="四、Redis集群高可用下的数据分片"><a href="#四、Redis集群高可用下的数据分片" class="headerlink" title="四、Redis集群高可用下的数据分片"></a>四、Redis集群高可用下的数据分片</h2><p>  数据分片有几个关键的问题需要解决：<br>1、数据怎么相对均匀地分片<br>2、客户端怎么访问到相应的节点和数据<br>3、重新分片的过程，怎么保证正常服务  </p>
+<h1 id="五、Redis集群高可用下的数据分片"><a href="#五、Redis集群高可用下的数据分片" class="headerlink" title="五、Redis集群高可用下的数据分片"></a>五、Redis集群高可用下的数据分片</h1><p>  数据分片有几个关键的问题需要解决：<br>1、数据怎么相对均匀地分片<br>2、客户端怎么访问到相应的节点和数据<br>3、重新分片的过程，怎么保证正常服务  </p>
 <p>针对Redis集群高可用下的数据分片，Redis 既没有用哈希取模，也没有用一致性哈希，而是用虚拟槽来实现的。Redis 创建了 16384 个槽（slot），每个节点负责一定区间的 slot。Redis 的每个 master 节点维护一个 16384 位（2048bytes=2KB）的位序列，比如：序列的第 0 位是 1，就代表第一个 slot 是它负责；序列的第 1 位是 0，代表第二个 slot不归它负责。当我们敲下set xx xx时候，Redis会通过对 key 用 CRC16 算法计算再%16384得到一个 slot的值，数据落到负责这个 slot 的 Redis 节点上。于是乎key 与 slot 的关系是永远不会变的，会变的只有 slot 和 Redis 节点的关系  </p>
-<p>当然我们总有这样的需求，希望不同的key落到相同的Redis节点上，以减少网络io的次数，那么我们就可以通过</p>
-<pre><code>set a{qs}a 1</code></pre><p>Redis 在计算槽编号的时候只会获取{}之间的字符串进行槽编号计算，  在 key 里面加入相同的{hash tag}保证上面两个不同的键被计算进入相同的槽中，这样就会落入redis集群中同一个节点中</p>
-<h2 id="五、Redis数据与数据库数据的一致性问题"><a href="#五、Redis数据与数据库数据的一致性问题" class="headerlink" title="五、Redis数据与数据库数据的一致性问题"></a>五、Redis数据与数据库数据的一致性问题</h2><p><em><em>矛盾集中在：到底是先更新数据库，再删除缓存，还是先删除缓存，再更新数据库  </em></em></p>
-<h3 id="5-1-先更新数据库，-再删除缓存"><a href="#5-1-先更新数据库，-再删除缓存" class="headerlink" title="5.1 先更新数据库， 再删除缓存"></a>5.1 先更新数据库， 再删除缓存</h3><p>正常情况：<br>更新数据库，成功。<br>删除缓存，成功。</p>
+<p>当然我们总有这样的需求，希望不同的key落到相同的Redis节点上，以减少网络io的次数，那么我们就可以通过在 key 里面加入{hash tag}即可，Redis 在计算槽编号的时候只会获取{}之间的字符串进行槽编号计算，  在 key 里面加入相同的{hash tag}保证上面两个不同的键被计算进入相同的槽中，这样就会落入redis集群中同一个节点中</p>
+<h1 id="六、Redis数据与数据库数据的一致性问题"><a href="#六、Redis数据与数据库数据的一致性问题" class="headerlink" title="六、Redis数据与数据库数据的一致性问题"></a>六、Redis数据与数据库数据的一致性问题</h1><p><em><em>矛盾集中在：到底是先更新数据库，再删除缓存，还是先删除缓存，再更新数据库  </em></em></p>
+<h2 id="6-1-先更新数据库，-再删除缓存"><a href="#6-1-先更新数据库，-再删除缓存" class="headerlink" title="6.1 先更新数据库， 再删除缓存"></a>6.1 先更新数据库， 再删除缓存</h2><p>正常情况：<br>更新数据库，成功。<br>删除缓存，成功。</p>
 <p>异常情况：<br>1、更新数据库失败，程序捕获异常，不会走到下一步，所以数据不会出现不一致。<br>2、更新数据库成功，删除缓存失败。数据库是新数据，缓存是旧数据，发生了不一致的情况。</p>
 <p><strong>异步更新缓存：</strong></p>
 <p>因为更新数据库时会往 binlog 写入日志，所以我们可以通过一个服务来监听 binlog的变化（比如阿里的canal），然后在客户端完成删除 key 的操作。如果删除失败的话，再发送到消息队列。总之，对于后删除缓存失败的情况，我们的做法是不断地重试删除，直到成功。（摘自网络）</p>
-<h3 id="5-2-先删除缓存，-再更新数据库"><a href="#5-2-先删除缓存，-再更新数据库" class="headerlink" title="5.2 先删除缓存， 再更新数据库"></a>5.2 先删除缓存， 再更新数据库</h3><p>正常情况：<br>删除缓存，成功。<br>更新数据库，成功。<br>异常情况：<br>1、删除缓存，程序捕获异常，不会走到下一步，所以数据不会出现不一致。<br>2、删除缓存成功，更新数据库失败。 因为以数据库的数据为准，所以不存在数据不一致的情况。</p>
+<h2 id="6-2-先删除缓存，-再更新数据库"><a href="#6-2-先删除缓存，-再更新数据库" class="headerlink" title="6.2 先删除缓存， 再更新数据库"></a>6.2 先删除缓存， 再更新数据库</h2><p>正常情况：<br>删除缓存，成功。<br>更新数据库，成功。<br>异常情况：<br>1、删除缓存，程序捕获异常，不会走到下一步，所以数据不会出现不一致。<br>2、删除缓存成功，更新数据库失败。 因为以数据库的数据为准，所以不存在数据不一致的情况。</p>
 <p><strong>看起来好像没问题，但是如果有程序并发操作的情况下：<br>1）线程 A 需要更新数据，首先删除了 Redis 缓存<br>2）线程 B 查询数据，发现缓存不存在，到数据库查询旧值，写入 Redis，返回<br>3）线程 A 更新了数据库<br>这个时候，Redis 是旧的值，数据库是新的值，发生了数据不一致的情况。<br>那问题就变成了：能不能让对同一条数据的访问串行化呢？代码肯定保证不了，因为有多个线程，即使做了任务队列也可能有多个服务实例。数据库也保证不了，因为会有多个数据库的连接。只有一个数据库只提供一个连接的情况下，才能保证读写的操作是串行的，或者我们把所有的读写请求放到同一个内存队列当中，但是这种情况吞吐量太低了。</strong><br>所以我们有一种延时双删的策略，在写入数据之后，再删除一次缓存。</p>
 <p>A 线程：<br>1）删除缓存<br>2）更新数据库<br>3）休眠 500ms（这个时间，依据读取数据的耗时而定）<br>4）再次删除缓存</p>
 
@@ -702,7 +869,7 @@ unsigned long long estimateObjectIdleTime(robj *o) {
                   property="dct:title" rel="dct:type">
                     《Redis那么快的背后》
                 </span> 由
-            <a xmlns:cc="http://creativecommons.org/ns#" href="/2020/02/16/redis-na-me-kuai-de-bei-hou/" property="cc:attributionName"
+            <a xmlns:cc="http://creativecommons.org/ns#" href="/2020/03/14/redis-na-me-kuai-de-bei-hou/" property="cc:attributionName"
                rel="cc:attributionURL">
                 徐斌
             </a> 采用
@@ -1012,7 +1179,7 @@ unsigned long long estimateObjectIdleTime(robj *o) {
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="Ucore Lab01">
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="Ucore Lab01">
                         
                         <span class="card-title">Ucore Lab01</span>
                     </div>
@@ -1057,11 +1224,11 @@ unsigned long long estimateObjectIdleTime(robj *o) {
                 本篇&nbsp;<i class="fa fa-dot-circle-o"></i>
             </div>
             <div class="card">
-                <a href="/2020/02/16/redis-na-me-kuai-de-bei-hou/">
+                <a href="/2020/03/14/redis-na-me-kuai-de-bei-hou/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/25.jpg" class="responsive-img" alt="Redis那么快的背后">
+                        <img src="/medias/featureimages/26.jpg" class="responsive-img" alt="Redis那么快的背后">
                         
                         <span class="card-title">Redis那么快的背后</span>
                     </div>
@@ -1074,7 +1241,7 @@ unsigned long long estimateObjectIdleTime(robj *o) {
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-02-16
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-03-14
                             </span>
                         <span class="publish-author">
                             
