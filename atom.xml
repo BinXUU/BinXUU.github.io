@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://binn-xu.github.io/"/>
-  <updated>2020-07-15T11:02:52.803Z</updated>
+  <updated>2020-08-04T06:57:44.205Z</updated>
   <id>https://binn-xu.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis那么快的背后</title>
+    <link href="https://binn-xu.github.io/2020/07/10/redis-na-me-kuai-de-bei-hou/"/>
+    <id>https://binn-xu.github.io/2020/07/10/redis-na-me-kuai-de-bei-hou/</id>
+    <published>2020-07-10T07:09:23.000Z</published>
+    <updated>2020-08-04T06:57:44.205Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;Redis 内置了复制（Replication），LUA脚本（Lua scripting）， LRU驱动事件（LRU
+        
+      
+    
+    </summary>
+    
+      <category term="Java" scheme="https://binn-xu.github.io/categories/Java/"/>
+    
+    
+      <category term="Java" scheme="https://binn-xu.github.io/tags/Java/"/>
+    
+  </entry>
   
   <entry>
     <title>Ucore Lab04</title>
@@ -69,58 +95,6 @@
   </entry>
   
   <entry>
-    <title>Ucore Lab05</title>
-    <link href="https://binn-xu.github.io/2020/05/16/ucore-lab05/"/>
-    <id>https://binn-xu.github.io/2020/05/16/ucore-lab05/</id>
-    <published>2020-05-16T07:09:23.000Z</published>
-    <updated>2020-07-15T09:12:46.121Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;Ucore-Lab05&quot;&gt;&lt;a href=&quot;#Ucore-Lab05&quot; class=&quot;headerlink&quot; title=&quot;Ucore Lab05&quot;&gt;&lt;/a&gt;Ucore Lab05&lt;/h1&gt;&lt;h1 id=&quot;一、-操作系统原理&quot;&gt;&lt;a
-        
-      
-    
-    </summary>
-    
-      <category term="Ucore" scheme="https://binn-xu.github.io/categories/Ucore/"/>
-    
-    
-      <category term="Ucore" scheme="https://binn-xu.github.io/tags/Ucore/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ucore Lab03</title>
-    <link href="https://binn-xu.github.io/2020/05/16/ucore-lab03/"/>
-    <id>https://binn-xu.github.io/2020/05/16/ucore-lab03/</id>
-    <published>2020-05-16T07:09:23.000Z</published>
-    <updated>2020-07-15T09:49:55.586Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;Ucore-Lab03&quot;&gt;&lt;a href=&quot;#Ucore-Lab03&quot; class=&quot;headerlink&quot; title=&quot;Ucore Lab03&quot;&gt;&lt;/a&gt;Ucore Lab03&lt;/h1&gt;&lt;h1 id=&quot;一、-操作系统原理&quot;&gt;&lt;a
-        
-      
-    
-    </summary>
-    
-      <category term="Ucore" scheme="https://binn-xu.github.io/categories/Ucore/"/>
-    
-    
-      <category term="Ucore" scheme="https://binn-xu.github.io/tags/Ucore/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Ucore Lab06</title>
     <link href="https://binn-xu.github.io/2020/05/16/ucore-lab06/"/>
     <id>https://binn-xu.github.io/2020/05/16/ucore-lab06/</id>
@@ -134,6 +108,32 @@
         
         
           &lt;h1 id=&quot;Ucore-Lab06&quot;&gt;&lt;a href=&quot;#Ucore-Lab06&quot; class=&quot;headerlink&quot; title=&quot;Ucore Lab06&quot;&gt;&lt;/a&gt;Ucore Lab06&lt;/h1&gt;&lt;h1 id=&quot;一、-操作系统原理&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/categories/Ucore/"/>
+    
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/tags/Ucore/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Ucore Lab05</title>
+    <link href="https://binn-xu.github.io/2020/05/16/ucore-lab05/"/>
+    <id>https://binn-xu.github.io/2020/05/16/ucore-lab05/</id>
+    <published>2020-05-16T07:09:23.000Z</published>
+    <updated>2020-07-15T09:12:46.121Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Ucore-Lab05&quot;&gt;&lt;a href=&quot;#Ucore-Lab05&quot; class=&quot;headerlink&quot; title=&quot;Ucore Lab05&quot;&gt;&lt;/a&gt;Ucore Lab05&lt;/h1&gt;&lt;h1 id=&quot;一、-操作系统原理&quot;&gt;&lt;a
         
       
     
@@ -173,6 +173,32 @@
   </entry>
   
   <entry>
+    <title>Ucore Lab03</title>
+    <link href="https://binn-xu.github.io/2020/05/16/ucore-lab03/"/>
+    <id>https://binn-xu.github.io/2020/05/16/ucore-lab03/</id>
+    <published>2020-05-16T07:09:23.000Z</published>
+    <updated>2020-07-15T09:49:55.586Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Ucore-Lab03&quot;&gt;&lt;a href=&quot;#Ucore-Lab03&quot; class=&quot;headerlink&quot; title=&quot;Ucore Lab03&quot;&gt;&lt;/a&gt;Ucore Lab03&lt;/h1&gt;&lt;h1 id=&quot;一、-操作系统原理&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/categories/Ucore/"/>
+    
+    
+      <category term="Ucore" scheme="https://binn-xu.github.io/tags/Ucore/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Ucore Lab01</title>
     <link href="https://binn-xu.github.io/2020/05/16/ucore-lab01/"/>
     <id>https://binn-xu.github.io/2020/05/16/ucore-lab01/</id>
@@ -195,32 +221,6 @@
     
     
       <category term="Ucore" scheme="https://binn-xu.github.io/tags/Ucore/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis那么快的背后</title>
-    <link href="https://binn-xu.github.io/2020/03/14/redis-na-me-kuai-de-bei-hou/"/>
-    <id>https://binn-xu.github.io/2020/03/14/redis-na-me-kuai-de-bei-hou/</id>
-    <published>2020-03-14T03:21:32.985Z</published>
-    <updated>2020-08-04T06:55:57.140Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;Redis 内置了复制（Replication），LUA脚本（Lua scripting）， LRU驱动事件（LRU
-        
-      
-    
-    </summary>
-    
-      <category term="Java" scheme="https://binn-xu.github.io/categories/Java/"/>
-    
-    
-      <category term="Java" scheme="https://binn-xu.github.io/tags/Java/"/>
     
   </entry>
   

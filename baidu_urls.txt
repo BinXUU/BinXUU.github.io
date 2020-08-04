@@ -1,8 +1,8 @@
+https://binn-xu.github.io/2020/07/10/redis-na-me-kuai-de-bei-hou/
 https://binn-xu.github.io/2020/05/16/ucore-lab04/
 https://binn-xu.github.io/2020/05/16/ucore-lab02/
-https://binn-xu.github.io/2020/05/16/ucore-lab05/
-https://binn-xu.github.io/2020/05/16/ucore-lab03/
 https://binn-xu.github.io/2020/05/16/ucore-lab06/
+https://binn-xu.github.io/2020/05/16/ucore-lab05/
 https://binn-xu.github.io/2020/05/16/ucore-lab07/
+https://binn-xu.github.io/2020/05/16/ucore-lab03/
 https://binn-xu.github.io/2020/05/16/ucore-lab01/
-https://binn-xu.github.io/2020/03/14/redis-na-me-kuai-de-bei-hou/
