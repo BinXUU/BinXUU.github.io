@@ -494,7 +494,7 @@
 <li>ziplist：OBJ_ENCODING_ZIPLIST（压缩列表）</li>
 <li>hashtable：OBJ_ENCODING_HT（哈希表）</li>
 </ul>
-<h3 id="ziplist-压缩列表"><a href="#ziplist-压缩列表" class="headerlink" title="ziplist 压缩列表"></a>ziplist 压缩列表</h3><h4 id="ziplist-压缩列表是什么？"><a href="#ziplist-压缩列表是什么？" class="headerlink" title="ziplist 压缩列表是什么？"></a>ziplist 压缩列表是什么？</h4><p>ziplist 是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，是一种时间换空间的思想，典型的符合计算机cache缓存的数据结构，只用在字段个数少，字段值小的场景里面。<br>ziplist 的内部结构？<br>ziplist.c 源码第 16 行的注释：<br>* <zlbytes> <zltail> <zllen> <entry> <entry> … <entry> <zlend></zlend></entry></entry></entry></zllen></zltail></zlbytes></p>
+<h3 id="ziplist-压缩列表"><a href="#ziplist-压缩列表" class="headerlink" title="ziplist 压缩列表"></a>ziplist 压缩列表</h3><h4 id="ziplist-压缩列表是什么？"><a href="#ziplist-压缩列表是什么？" class="headerlink" title="ziplist 压缩列表是什么？"></a>ziplist 压缩列表是什么？</h4><p>ziplist 是一个经过特殊编码的双向链表，它不存储指向上一个链表节点和指向下一个链表节点的指针，而是存储上一个节点长度和当前节点长度，通过牺牲部分读写性能，来换取高效的内存空间利用率，是一种时间换空间的思想，典型的符合计算机cache缓存的数据结构，只用在字段个数少，字段值小的场景里面。<br>ziplist 的内部结构？<br>ziplist.c 源码第 16 行的注释：$<zlbytes> <zltail> <zllen> <entry> <entry> … <entry> <zlend>$</zlend></entry></entry></entry></zllen></zltail></zlbytes></p>
 <pre class="line-numbers language-c++"><code class="language-c++">typedef struct zlentry {
     unsigned int prevrawlensize; /* 上一个链表节点占用的长度 */
     unsigned int prevrawlen; /* 存储上一个链表节点的长度数值所需要的字节数 */
@@ -509,8 +509,8 @@
 <pre class="line-numbers language-c++"><code class="language-c++">hash-max-ziplist-value 64      // ziplist 中最大能存放的值长度
 hash-max-ziplist-entries 512 // ziplist 中最多能存放的 entry 节点数量<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>一个哈希对象超过配置的阈值（键和值的长度有&gt;64byte，键值对个数&gt;512 个）时，会转换成哈希表（hashtable）。</p>
-<pre class="line-numbers language-c++"><code class="language-c++">/* 源码位置： t_hash.c ， 当达字段个数超过阈值， 使用 HT 作为编码 */
-if (hashTypeLength(o) > server.hash_max_ziplist_entries)
+<p>源码位置： t_hash.c </p>
+<pre class="line-numbers language-c++"><code class="language-c++">if (hashTypeLength(o) > server.hash_max_ziplist_entries)
     hashTypeConvert(o, OBJ_ENCODING_HT);
 /*源码位置： t_hash.c， 当字段值长度过大， 转为 HT */
 for (i = start; i <= end; i++) {
@@ -520,7 +520,7 @@ for (i = start; i <= end; i++) {
         hashTypeConvert(o, OBJ_ENCODING_HT);
         break;
     }
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="hashtable（-dict）"><a href="#hashtable（-dict）" class="headerlink" title="hashtable（ dict）"></a>hashtable（ dict）</h3><p>Redis 的 KV 结构是通过一个 dictEntry 来实现的。<br>Redis 又对 dictEntry 进行了多层的封装。 </p>
 <p>hashtable（ dict）</p>
 <pre class="line-numbers language-c++"><code class="language-c++">typedef struct dictEntry {
@@ -694,76 +694,75 @@ int select(int nfds, fd_set *readfds, fd_set *writefds,
 #define MAXLINE 80
 #define SERV_PORT 6666
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     int i, maxi, maxfd, listenfd, connfd, sockfd;
-    int nready, client[FD_SETSIZE];     /* FD_SETSIZE 默认为 1024 */
+    int nready, client[FD_SETSIZE];    /* FD_SETSIZE 默认为 1024 */
     ssize_t n;
     fd_set rset, allset;
     char buf[MAXLINE];
-    char str[INET_ADDRSTRLEN];             /* #define INET_ADDRSTRLEN 16 */
+    char str[INET_ADDRSTRLEN];            /* #define INET_ADDRSTRLEN 16 */
     socklen_t cliaddr_len;
     struct sockaddr_in cliaddr, servaddr;
 
     listenfd = Socket(AF_INET, SOCK_STREAM, 0);
 
-bzero(&servaddr, sizeof(servaddr));
-servaddr.sin_family = AF_INET;
-servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-servaddr.sin_port = htons(SERV_PORT);
+    bzero(&servaddr, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    servaddr.sin_port = htons(SERV_PORT);
 
-Bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
+    Bind(listenfd, (struct sockaddr *) &servaddr, sizeof(servaddr));
 
-Listen(listenfd, 20);         /* 默认最大128 */
+    Listen(listenfd, 20);        /* 默认最大128 */
 
-maxfd = listenfd;             /* 初始化 */
-maxi = -1;                    /* client[]的下标 */
+    maxfd = listenfd;            /* 初始化 */
+    maxi = -1;                    /* client[]的下标 */
 
-for (i = 0; i < FD_SETSIZE; i++)
-    client[i] = -1;         /* 用-1初始化client[] */
+    for (i = 0; i < FD_SETSIZE; i++)
+        client[i] = -1;        /* 用-1初始化client[] */
 
-FD_ZERO(&allset);
-FD_SET(listenfd, &allset); /* 构造select监控文件描述符集 */
+    FD_ZERO(&allset);
+    FD_SET(listenfd, &allset); /* 构造select监控文件描述符集 */
 
-for ( ; ; ) {
-    rset = allset;             /* 每次循环时都从新设置select监控信号集 */
-    nready = select(maxfd+1, &rset, NULL, NULL, NULL);
+    for (;;) {
+        rset = allset;            /* 每次循环时都从新设置select监控信号集 */
+        nready = select(maxfd + 1, &rset, NULL, NULL, NULL);
 
-    if (nready < 0)
-        perr_exit("select error");
-    if (FD_ISSET(listenfd, &rset)) { /* new client connection */
-        cliaddr_len = sizeof(cliaddr);
-        connfd = Accept(listenfd, (struct sockaddr *)&cliaddr, &cliaddr_len);
-        printf("received from %s at PORT %d\n",
-                inet_ntop(AF_INET, &cliaddr.sin_addr, str, sizeof(str)),
-                ntohs(cliaddr.sin_port));
-        for (i = 0; i < FD_SETSIZE; i++) {
-            if (client[i] < 0) {
-                client[i] = connfd; /* 保存accept返回的文件描述符到client[]里 */
-                break;
+        if (nready < 0)
+            perr_exit("select error");
+        if (FD_ISSET(listenfd, &rset)) { /* new client connection */
+            cliaddr_len = sizeof(cliaddr);
+            connfd = Accept(listenfd, (struct sockaddr *) &cliaddr, &cliaddr_len);
+            printf("received from %s at PORT %d\n",
+                   inet_ntop(AF_INET, &cliaddr.sin_addr, str, sizeof(str)),
+                   ntohs(cliaddr.sin_port));
+            for (i = 0; i < FD_SETSIZE; i++) {
+                if (client[i] < 0) {
+                    client[i] = connfd; /* 保存accept返回的文件描述符到client[]里 */
+                    break;
+                }
             }
-        }
-        /* 达到select能监控的文件个数上限 1024 */
-        if (i == FD_SETSIZE) {
-            fputs("too many clients\n", stderr);
-            exit(1);
-        }
+            /* 达到select能监控的文件个数上限 1024 */
+            if (i == FD_SETSIZE) {
+                fputs("too many clients\n", stderr);
+                exit(1);
+            }
 
-        FD_SET(connfd, &allset);     /* 添加一个新的文件描述符到监控信号集里 */
-        if (connfd > maxfd)
-            maxfd = connfd;         /* select第一个参数需要 */
-        if (i > maxi)
-            maxi = i;                 /* 更新client[]最大下标值 */
+            FD_SET(connfd, &allset);    /* 添加一个新的文件描述符到监控信号集里 */
+            if (connfd > maxfd)
+                maxfd = connfd;        /* select第一个参数需要 */
+            if (i > maxi)
+                maxi = i;                /* 更新client[]最大下标值 */
 
-        if (--nready == 0)
-            continue;                 /* 如果没有更多的就绪文件描述符继续回到上面select阻塞监听,
+            if (--nready == 0)
+                continue;                /* 如果没有更多的就绪文件描述符继续回到上面select阻塞监听,
                                         负责处理未处理完的就绪文件描述符 */
         }
-        for (i = 0; i <= maxi; i++) {     /* 检测哪个clients 有数据就绪 */
-            if ( (sockfd = client[i]) < 0)
+        for (i = 0; i <= maxi; i++) {    /* 检测哪个clients 有数据就绪 */
+            if ((sockfd = client[i]) < 0)
                 continue;
             if (FD_ISSET(sockfd, &rset)) {
-                if ( (n = Read(sockfd, buf, MAXLINE)) == 0) {
+                if ((n = Read(sockfd, buf, MAXLINE)) == 0) {
                     Close(sockfd);        /* 当client关闭链接时，服务器端也关闭对应链接 */
                     FD_CLR(sockfd, &allset); /* 解除select监控此文件描述符 */
                     client[i] = -1;
@@ -780,7 +779,7 @@ for ( ; ; ) {
     }
     close(listenfd);
     return 0;
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h1 id="三、-内存回收"><a href="#三、-内存回收" class="headerlink" title="三、 内存回收"></a>三、 内存回收</h1><h2 id="3-1、内存回收——-LRU-淘汰原理"><a href="#3-1、内存回收——-LRU-淘汰原理" class="headerlink" title="3.1、内存回收—— LRU 淘汰原理"></a>3.1、内存回收—— LRU 淘汰原理</h2><h3 id="问题1：基于一个数据结构做缓存，怎么实现-LRU——最长时间不被访问的元素在超过容量时删除？"><a href="#问题1：基于一个数据结构做缓存，怎么实现-LRU——最长时间不被访问的元素在超过容量时删除？" class="headerlink" title="问题1：基于一个数据结构做缓存，怎么实现 LRU——最长时间不被访问的元素在超过容量时删除？"></a>问题1：基于一个数据结构做缓存，怎么实现 LRU——最长时间不被访问的元素在超过容量时删除？</h3><p>常规的哈希表+双向链表<br>但存在的问题在于，基于传统的LRU算法实现Redis LRU需要额外的数据结构存储，消耗内存</p>
 <p>Redis LRU 对传统的 LRU 算法进行了改良，通过随机采样来调整算法的精度。<br>如果淘汰策略是 LRU，则根据配置的采样值 maxmemory_samples（默认是 5 个）,<br>随机从数据库中选择 m 个 key, 淘汰其中热度最低的 key 对应的缓存数据。所以采样参数m配置的数值越大, 就越能精确的查找到待淘汰的缓存数据,但是也消耗更多的CPU计算,执行效率降低。<br>而听说 Redis LRU 算法在 sample 为 10 的情况下，已经能接近传统 LRU 算法了</p>
 <h3 id="问题2：如何找出热度最低的数据？"><a href="#问题2：如何找出热度最低的数据？" class="headerlink" title="问题2：如何找出热度最低的数据？"></a>问题2：如何找出热度最低的数据？</h3><p>Redis 中所有对象结构都有一个 lru 字段, 且使用了 unsigned 的低 24 位，这个字段用来记录对象的热度。对象被创建时会记录 lru 值。在被访问的时候也会更新 lru 的值。</p>
@@ -824,7 +823,7 @@ unsigned long long estimateObjectIdleTime(robj *o) {
 <p>可以使用命令 bgrewriteaof 来重写。</p>
 <h1 id="五、Redis集群高可用下的数据分片"><a href="#五、Redis集群高可用下的数据分片" class="headerlink" title="五、Redis集群高可用下的数据分片"></a>五、Redis集群高可用下的数据分片</h1><p>  数据分片有几个关键的问题需要解决：<br>1、数据怎么相对均匀地分片<br>2、客户端怎么访问到相应的节点和数据<br>3、重新分片的过程，怎么保证正常服务  </p>
 <p>针对Redis集群高可用下的数据分片，Redis 既没有用哈希取模，也没有用一致性哈希，而是用虚拟槽来实现的。Redis 创建了 16384 个槽（slot），每个节点负责一定区间的 slot。Redis 的每个 master 节点维护一个 16384 位（2048bytes=2KB）的位序列，比如：序列的第 0 位是 1，就代表第一个 slot 是它负责；序列的第 1 位是 0，代表第二个 slot不归它负责。当我们敲下set xx xx时候，Redis会通过对 key 用 CRC16 算法计算再%16384得到一个 slot的值，数据落到负责这个 slot 的 Redis 节点上。于是乎key 与 slot 的关系是永远不会变的，会变的只有 slot 和 Redis 节点的关系  </p>
-<p>当然我们总有这样的需求，希望不同的key落到相同的Redis节点上，以减少网络io的次数，那么我们就可以通过在 key 里面加入{hash tag}即可，Redis 在计算槽编号的时候只会获取{}之间的字符串进行槽编号计算，  在 key 里面加入相同的{hash tag}保证上面两个不同的键被计算进入相同的槽中，这样就会落入redis集群中同一个节点中</p>
+<p>当然我们总有这样的需求，希望不同的key落到相同的Redis节点上，以减少网络io的次数，那么我们就可以通过在 key 里面加入<code>{hash tag}</code>即可，Redis 在计算槽编号的时候只会获取{}之间的字符串进行槽编号计算，  在 key 里面加入相同的<code>{hash tag}</code>保证上面两个不同的键被计算进入相同的槽中，这样就会落入redis集群中同一个节点中</p>
 <h1 id="六、Redis数据与数据库数据的一致性问题"><a href="#六、Redis数据与数据库数据的一致性问题" class="headerlink" title="六、Redis数据与数据库数据的一致性问题"></a>六、Redis数据与数据库数据的一致性问题</h1><p><em><em>矛盾集中在：到底是先更新数据库，再删除缓存，还是先删除缓存，再更新数据库  </em></em></p>
 <h2 id="6-1-先更新数据库，-再删除缓存"><a href="#6-1-先更新数据库，-再删除缓存" class="headerlink" title="6.1 先更新数据库， 再删除缓存"></a>6.1 先更新数据库， 再删除缓存</h2><p>正常情况：<br>更新数据库，成功。<br>删除缓存，成功。</p>
 <p>异常情况：<br>1、更新数据库失败，程序捕获异常，不会走到下一步，所以数据不会出现不一致。<br>2、更新数据库成功，删除缓存失败。数据库是新数据，缓存是旧数据，发生了不一致的情况。</p>
